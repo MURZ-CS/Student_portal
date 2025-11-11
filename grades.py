@@ -1,6 +1,6 @@
 # grades.py
 def calculate_grade(percentage):
-    if percentage >= 90:
+    if percentage >= 95:
         return 'A+'
     elif percentage >= 80:
         return 'A'

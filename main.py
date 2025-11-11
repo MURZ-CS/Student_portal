@@ -8,7 +8,7 @@ from grades import calculate_grade, calculate_percentage
 def main():
     while True:
         print("\n--- Student Portal ---")
-        print("1. Add Student")
+        print("1. Add Student-->>> ")
         print("2. View Students")
         print("3. Add Teacher")
         print("4. View Teachers")

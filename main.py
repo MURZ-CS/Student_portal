@@ -1,7 +1,7 @@
 # main.py
 from Student import add_student, view_students
 from teachers import add_teacher, view_teachers
-from attandance import mark_attendance, view_attendance
+from Attandance import mark_attendance, view_attendance
 from marks import add_marks, view_marks
 from grades import calculate_grade, calculate_percentage
 

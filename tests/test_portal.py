@@ -1,8 +1,8 @@
 # tests/test_portal.py
 import pytest
-from students import add_student, view_students
+from student import add_student, view_students
 from teachers import add_teacher
-from attendance import mark_attendance, view_attendance
+from attandance import mark_attendance, view_attendance
 from marks import add_marks, view_marks
 from grades import calculate_grade, calculate_percentage
 

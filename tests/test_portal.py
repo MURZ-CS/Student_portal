@@ -1,6 +1,6 @@
 # tests/test_portal.py
 import pytest
-from student import add_student, view_students
+from Student import add_student, view_students
 from teachers import add_teacher
 from attandance import mark_attendance, view_attendance
 from marks import add_marks, view_marks

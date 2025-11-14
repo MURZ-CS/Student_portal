@@ -1,7 +1,7 @@
 import pytest
 
 # Import your functions (adjust if your filename is different)
-from student_management import (
+from Student import (
     students_db,
     validate_student_id,
     add_student,

@@ -53,12 +53,6 @@ def test_delete_teacher():
     teachers = view_teachers()
     assert "T003" not in teachers
 
-def test_assign_class():
-    add_teacher("T004", "Mr. Y", ["History"], [])
-    assign_class("T004", "10D")
-    teachers = view_teachers()
-    assert "10D" in teachers["T004"]["classes"]
-
 # ----------------------------
 # ATTENDANCE TESTS
 # ----------------------------

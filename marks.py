@@ -15,15 +15,24 @@ VALID_EXAMS = ["midterm", "final", "quiz", "assignment", "project"]
 
 # ---------------------------- BASIC FUNCTIONS -----------------------------
 
+def validate_mark_input(score):
+    """Check if mark is within 0-100."""
+    if score < 0:
+        return "Below minimum (invalid)"
+    elif score > 100:
+        return "Above maximum (invalid)"
+    return "Valid mark"
+
 def add_marks(student_id, subject, exam_type, score):
     """Add marks for a student in a specific subject and exam."""
     exam_type = exam_type.lower()
 
-    if exam_type not in VALID_EXAMS:
-        return f"Invalid exam type. Use: {', '.join(VALID_EXAMS)}"
+    validation_msg = validate_mark_input(score)
+    if validation_msg != "Valid mark":
+        return validation_msg
 
-    if not (0 <= score <= 100):
-        return "Marks must be between 0 and 100."
+    if exam_type not in VALID_EXAMS:
+        return "Invalid exam type"
 
     if student_id not in marks:
         marks[student_id] = {}
@@ -33,8 +42,7 @@ def add_marks(student_id, subject, exam_type, score):
 
     marks[student_id][subject][exam_type] = score
 
-    return f"Marks added for {student_id}: {subject} - {exam_type} = {score}"
-
+    return "Success"
 
 def view_marks(student_id=None):
     """View marks of all students or a single student."""
@@ -44,7 +52,6 @@ def view_marks(student_id=None):
 
 
 
-# ---------------------------- UPDATE / DELETE -----------------------------
 
 def update_marks(student_id, subject, exam_type, new_score):
     if student_id not in marks:

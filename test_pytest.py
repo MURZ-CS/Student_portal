@@ -47,13 +47,16 @@ def test_search_student():
     add_student("S004", "Eve", "7A")
     result = search_student("S004")
     assert result["name"] == "Eve"
-
+    
 def test_search_by_class():
     add_student("S005", "Fay", "6A")
     add_student("S006", "Grace", "6A")
     result = search_by_class("6A")
+    # If no students, result is a string → test should fail
+    assert isinstance(result, dict), "Expected dict, got string"
     assert "S005" in result
     assert "S006" in result
+
 
 
 # ==================== TEACHER TESTS ==================== #

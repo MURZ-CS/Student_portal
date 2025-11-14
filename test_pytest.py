@@ -1,147 +1,113 @@
 import pytest
-
-# ---- Import all functions from your modules ----
 from Student import (
-    add_student, view_students, update_student, delete_student,
-    search_student, search_student_by_name, promote_student,
-    count_students_by_class
+    students_db, add_student, view_students, update_student,
+    delete_student, search_student, search_by_class
 )
-
 from teachers import (
-    add_teacher, view_teachers, update_teacher, delete_teacher,
-    search_teacher, assign_subject, unassign_subject,
-    list_teachers_by_subject
+    teachers, add_teacher, view_teachers, update_teacher, delete_teacher,
+    search_by_name, search_by_subject, search_by_class, search_by_id,
+    assign_class, unassign_class, add_subject, remove_subject,
+    add_teacher_rating, get_average_rating, count_teachers
 )
 
-from Attandance import (
-    mark_attendance, view_attendance, view_attendance_by_student,
-    attendance_percentage
-)
 
-from marks import (
-    add_marks, view_marks, update_marks, delete_marks,
-    subject_topper, class_average
-)
-
-from grades import (
-    calculate_percentage, calculate_grade
-)
-
-# ---------------- FIXTURE TO RESET GLOBAL DATA ---------------- #
-
+# ----------------- FIXTURE TO RESET DATA ----------------- #
 @pytest.fixture(autouse=True)
 def reset_data():
-    """
-    Automatically runs before each test.
-    Clears all global dictionaries inside your modules.
-    """
-    import Student, teachers, Attandance, marks, grades
-
-    Student.students.clear()
-    teachers.teachers.clear()
-    Attandance.attendance.clear()
-    marks.marks_data.clear()
-    grades.marks_reference.clear()
-
+    students_db.clear()
+    teachers.clear()
     yield
 
 
 # ==================== STUDENT TESTS ==================== #
 
 def test_add_student():
-    add_student("S1", "Alice", "10A")
-    assert "S1" in view_students()
+    result = add_student("S001", "Alice", "10A", "123456789", "CityX")
+    assert "added successfully" in result
+    assert "S001" in students_db
 
+def test_invalid_student_id():
+    result = add_student("X001", "Bob", "10B")
+    assert "Invalid student ID" in result
 
 def test_update_student():
-    add_student("S1", "Alice", "10A")
-    update_student("S1", "Alicia", "10B")
-    assert view_students()["S1"]["name"] == "Alicia"
+    add_student("S002", "Charlie", "9A")
+    result = update_student("S002", name="Charles", phone="987654321")
+    assert result == "Student information updated successfully."
+    assert students_db["S002"]["name"] == "Charles"
+    assert students_db["S002"]["phone"] == "987654321"
 
+def test_delete_student():
+    add_student("S003", "David", "8A")
+    result = delete_student("S003")
+    assert result == "Student deleted successfully."
+    assert "S003" not in students_db
 
-def test_search_student_by_id():
-    add_student("S2", "Bob", "9A")
-    assert search_student("S2")["name"] == "Bob"
+def test_search_student():
+    add_student("S004", "Eve", "7A")
+    result = search_student("S004")
+    assert result["name"] == "Eve"
 
-
-def test_promote_student():
-    add_student("S3", "Charlie", "8A")
-    promote_student("S3")
-    assert search_student("S3")["class"] == "9A"
+def test_search_by_class():
+    add_student("S005", "Fay", "6A")
+    add_student("S006", "Grace", "6A")
+    result = search_by_class("6A")
+    assert "S005" in result
+    assert "S006" in result
 
 
 # ==================== TEACHER TESTS ==================== #
 
 def test_add_teacher():
-    add_teacher("T1", "Mr. John", "Math")
-    assert "T1" in view_teachers()
+    result = add_teacher("T001", "Mr. John")
+    assert "added successfully" in result
+    assert "T001" in teachers
 
+def test_update_teacher():
+    add_teacher("T002", "Ms. Rose")
+    result = update_teacher("T002", name="Ms. Rosa", subject=["Math"])
+    assert result == "Teacher details updated."
+    assert teachers["T002"]["name"] == "Ms. Rosa"
+    assert "Math" in teachers["T002"]["subject"]
 
-def test_assign_subject():
-    add_teacher("T2", "Ms. Rose", "Science")
-    assign_subject("T2", "Biology")
-    assert "Biology" in view_teachers()["T2"]["subjects"]
+def test_delete_teacher():
+    add_teacher("T003", "Mr. Khan")
+    result = delete_teacher("T003")
+    assert result == "Teacher deleted successfully."
+    assert "T003" not in teachers
 
+def test_search_by_name_subject_class():
+    add_teacher("T004", "Mrs. Lee", subject=["Science"], assigned_class=["10A"])
+    assert "T004" in search_by_name("Mrs. Lee")
+    assert "T004" in search_by_subject("Science")
+    assert "T004" in search_by_class("10A")
 
-def test_unassign_subject():
-    add_teacher("T3", "Mr. Khan", "Physics")
-    assign_subject("T3", "Math")
-    unassign_subject("T3", "Math")
-    assert "Math" not in view_teachers()["T3"]["subjects"]
+def test_search_by_id():
+    add_teacher("T005", "Mr. Tan")
+    assert search_by_id("T005")["name"] == "Mr. Tan"
 
+def test_assign_unassign_class():
+    add_teacher("T006", "Ms. Kim")
+    assign_class("T006", "9B")
+    assert "9B" in teachers["T006"]["class"]
+    unassign_class("T006", "9B")
+    assert "9B" not in teachers["T006"]["class"]
 
-# ==================== ATTENDANCE TESTS ==================== #
+def test_add_remove_subject():
+    add_teacher("T007", "Mr. Lee")
+    add_subject("T007", "English")
+    assert "English" in teachers["T007"]["subject"]
+    remove_subject("T007", "English")
+    assert "English" not in teachers["T007"]["subject"]
 
-def test_mark_attendance():
-    mark_attendance("S1", "2024-01-01", "Present")
-    assert view_attendance_by_student("S1")[0]["status"] == "Present"
+def test_teacher_rating():
+    add_teacher("T008", "Ms. Park")
+    add_teacher_rating("T008", 4)
+    add_teacher_rating("T008", 5)
+    avg = get_average_rating("T008")
+    assert avg == 4.5
 
-
-def test_attendance_percentage():
-    mark_attendance("S1", "2024-01-01", "Present")
-    mark_attendance("S1", "2024-01-02", "Absent")
-    percentage = attendance_percentage("S1")
-    assert percentage == 50  # 1/2 days present
-
-
-# ==================== MARKS TESTS ==================== #
-
-def test_add_marks():
-    add_marks("S1", "Math", 88)
-    assert view_marks()["S1"]["Math"] == 88
-
-
-def test_update_marks():
-    add_marks("S2", "English", 70)
-    update_marks("S2", "English", 92)
-    assert view_marks()["S2"]["English"] == 92
-
-
-def test_delete_marks():
-    add_marks("S3", "Physics", 81)
-    delete_marks("S3", "Physics")
-    assert "Physics" not in view_marks().get("S3", {})
-
-
-def test_subject_topper():
-    add_marks("S1", "Chemistry", 90)
-    add_marks("S2", "Chemistry", 95)
-    topper = subject_topper("Chemistry")
-    assert topper["student_id"] == "S2"
-
-
-# ==================== GRADES TESTS ==================== #
-
-def test_calculate_percentage():
-    # grades module expects marks via its internal marks_reference
-    from grades import marks_reference
-    marks_reference["S1"] = {"Math": 90, "English": 80, "Science": 70}
-
-    assert calculate_percentage("S1") == 80  # (90+80+70)/3
-
-
-def test_calculate_grade():
-    from grades import marks_reference
-    marks_reference["S1"] = {"Math": 95, "English": 96}
-
-    assert calculate_grade("S1") == "A"
+def test_count_teachers():
+    add_teacher("T009", "Mr. White")
+    add_teacher("T010", "Ms. Black")
+    assert count_teachers() == 2

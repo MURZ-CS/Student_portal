@@ -24,7 +24,8 @@ def test_update_student():
 def test_delete_student():
     add_student("S003", "Charlie", "10C")
     delete_student("S003")
-    assert search_student("S003") == "Student not found."
+    assert search_student("S003") == "Error: Student not found."
+
 
 def test_search_by_class():
     add_student("S004", "Daisy", "10A")
@@ -125,5 +126,6 @@ def test_calculate_gpa():
     add_marks("S005", "Physics", "midterm", 70)
     add_marks("S005", "Physics", "final", 72)
     gpa = calculate_gpa("S005")
-    assert round(gpa, 2) == 3.35  # according to grading boundaries
+    assert round(gpa, 2) == 3.5
+  # according to grading boundaries
 

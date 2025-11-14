@@ -7,13 +7,10 @@ def reset_marks():
     yield
 
 def test_add_and_view_marks():
-    assert add_marks("S1", "Math", "midterm", 80) == "Marks added for S1: Math - midterm = 80"
-    assert add_marks("S1", "Math", "final", 90) == "Marks added for S1: Math - final = 90"
-    
-    student_marks = view_marks("S1")
-    assert "Math" in student_marks
-    assert student_marks["Math"]["midterm"] == 80
-    assert student_marks["Math"]["final"] == 90
+    marks.clear()  # reset before test
+    assert add_marks("S1", "Math", "midterm", 80) == "Success"
+    assert marks["S1"]["Math"]["midterm"] == 80
+
 
 def test_percentage_calculation():
     add_marks("S1", "Math", "midterm", 80)

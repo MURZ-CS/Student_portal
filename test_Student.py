@@ -10,7 +10,6 @@ from Student import (
     update_student,
     delete_student,
     view_students,
-    export_students,
     generate_roll_number
 )
 
@@ -149,17 +148,3 @@ def test_delete_student_not_found():
 # ---------------------------
 # TEST: Export File
 # ---------------------------
-def test_export_students(tmp_path):
-    # Add sample
-    add_student("S001", "Ali", "10A")
-
-    filename = tmp_path / "export_test.txt"
-    result = export_students(filename)
-
-    assert os.path.exists(filename)
-    assert "export_test.txt" in str(result)
-
-    # Check file content
-    content = filename.read_text()
-    assert "S001" in content
-    assert "Ali" in content

@@ -1,88 +1,90 @@
+import pytest
 
-# Import your functions & global DB
+# Import your functions (adjust if your filename is different)
 from student_management import (
     students_db,
     validate_student_id,
     add_student,
-    generate_roll_number,
-    view_students,
     search_student,
     search_by_class,
     update_student,
     delete_student,
-    export_students
+    view_students,
+    export_students,
+    generate_roll_number
 )
 
-# -----------------------------------------------------------
-# FIXTURE — Reset the global dictionary before each test
-# -----------------------------------------------------------
+# ---------------------------
+# FIXTURE → Reset DB before each test
+# ---------------------------
 @pytest.fixture(autouse=True)
-def reset_db():
+def reset_students_db():
+    students_db.clear()
+    yield
     students_db.clear()
 
 
-# -----------------------------------------------------------
-# TEST: Student ID validation
-# -----------------------------------------------------------
-def test_validate_student_id_valid():
+# ---------------------------
+# TEST: Validate Student ID
+# ---------------------------
+def test_validate_student_id():
     assert validate_student_id("S001") is True
-    assert validate_student_id("S450") is True
-
-
-def test_validate_student_id_invalid():
+    assert validate_student_id("S120") is True
     assert validate_student_id("A001") is False
-    assert validate_student_id("S00X") is False
+    assert validate_student_id("S00A") is False
     assert validate_student_id("001") is False
 
 
-# -----------------------------------------------------------
-# TEST: Adding Students
-# -----------------------------------------------------------
+# ---------------------------
+# TEST: Add Student
+# ---------------------------
 def test_add_student_success():
-    msg = add_student("S001", "Ali", "10A")
-    assert msg == "Student Ali added successfully!"
+    result = add_student("S001", "Ali", "10A", phone="12345")
+    assert result == "Student Ali added successfully!"
     assert "S001" in students_db
-    assert students_db["S001"]["name"] == "Ali"
-
-
-def test_add_student_duplicate_id():
-    add_student("S001", "Ali", "10A")
-    msg = add_student("S001", "Bilal", "10A")
-    assert msg == "Error: Student ID already exists."
+    assert students_db["S001"]["roll_no"] == 1
 
 
 def test_add_student_invalid_id():
-    msg = add_student("X001", "Ali", "10A")
-    assert msg == "Error: Invalid student ID format. Use S001, S002 etc."
+    result = add_student("ABC1", "Ali", "10A")
+    assert result == "Error: Invalid student ID format. Use S001, S002 etc."
 
 
-# -----------------------------------------------------------
-# TEST: Roll number generation
-# -----------------------------------------------------------
-def test_generate_roll_number():
+def test_add_student_duplicate():
     add_student("S001", "Ali", "10A")
-    add_student("S002", "Bilal", "10A")
-    roll = generate_roll_number("10A")
-    assert roll == 3  # two already exist, next should be 3
+    result = add_student("S001", "Ali", "10A")
+    assert result == "Error: Student ID already exists."
 
 
-# -----------------------------------------------------------
-# TEST: View students
-# -----------------------------------------------------------
+# ---------------------------
+# TEST: Generate Roll Numbers
+# ---------------------------
+def test_generate_roll_number_increments():
+    add_student("S001", "Ali", "10A")
+    add_student("S002", "Ahmed", "10A")
+    add_student("S003", "Sara", "9B")
+    
+    assert generate_roll_number("10A") == 3   # two already exist
+    assert generate_roll_number("9B") == 2    # one already exists
+
+
+# ---------------------------
+# TEST: View Students
+# ---------------------------
 def test_view_students():
     add_student("S001", "Ali", "10A")
-    data = view_students()
-    assert "S001" in data
-    assert data["S001"]["name"] == "Ali"
+    result = view_students()
+    assert "S001" in result
+    assert len(result) == 1
 
 
-# -----------------------------------------------------------
-# TEST: Search student by ID
-# -----------------------------------------------------------
+# ---------------------------
+# TEST: Search Student by ID
+# ---------------------------
 def test_search_student_found():
     add_student("S001", "Ali", "10A")
-    result = search_student("S001")
-    assert result["name"] == "Ali"
+    data = search_student("S001")
+    assert data["name"] == "Ali"
 
 
 def test_search_student_not_found():
@@ -90,83 +92,66 @@ def test_search_student_not_found():
     assert result == "Error: Student not found."
 
 
-# -----------------------------------------------------------
-# TEST: Search by class
-# -----------------------------------------------------------
+# ---------------------------
+# TEST: Search by Class
+# ---------------------------
 def test_search_by_class_found():
     add_student("S001", "Ali", "10A")
-    add_student("S002", "Bilal", "10A")
-    result = search_by_class("10A")
+    add_student("S002", "Ahmed", "10A")
+    add_student("S003", "Sara", "9B")
 
+    result = search_by_class("10A")
     assert len(result) == 2
     assert "S001" in result
     assert "S002" in result
 
 
 def test_search_by_class_not_found():
-    result = search_by_class("99Z")
-    assert result == "No students found in class 99Z"
+    result = search_by_class("5C")
+    assert result == "No students found in class 5C"
 
 
-# -----------------------------------------------------------
-# TEST: Update student
-# -----------------------------------------------------------
-def test_update_student_success():
+# ---------------------------
+# TEST: Update Student
+# ---------------------------
+def test_update_student():
     add_student("S001", "Ali", "10A")
-    msg = update_student("S001", name="Updated", phone="12345")
-    
-    assert msg == "Student information updated successfully."
-    assert students_db["S001"]["name"] == "Updated"
-    assert students_db["S001"]["phone"] == "12345"
+    result = update_student("S001", name="Ali Raza", phone="555", class_name="12B")
 
-
-def test_update_student_change_class_and_roll():
-    add_student("S001", "Ali", "10A")
-    add_student("S002", "Bilal", "10A")
-    
-    msg = update_student("S001", class_name="11B")
-
-    assert msg == "Student information updated successfully."
-    assert students_db["S001"]["class"] == "11B"
-    assert students_db["S001"]["roll_no"] == 1  # first student in 11B
+    assert result == "Student information updated successfully."
+    assert students_db["S001"]["name"] == "Ali Raza"
+    assert students_db["S001"]["phone"] == "555"
+    assert students_db["S001"]["class"] == "12B"
+    assert students_db["S001"]["roll_no"] == 1  # first student in 12B
 
 
 def test_update_student_not_found():
-    msg = update_student("S999", name="Test")
-    assert msg == "Error: Student not found."
+    result = update_student("S999", name="New")
+    assert result == "Error: Student not found."
 
 
-# -----------------------------------------------------------
-# TEST: Deleting student
-# -----------------------------------------------------------
-def test_delete_student_success():
+# ---------------------------
+# TEST: Delete Student
+# ---------------------------
+def test_delete_student():
     add_student("S001", "Ali", "10A")
-    msg = delete_student("S001")
-    
-    assert msg == "Student deleted successfully."
+    result = delete_student("S001")
+
+    assert result == "Student deleted successfully."
     assert "S001" not in students_db
 
 
 def test_delete_student_not_found():
-    msg = delete_student("S999")
-    assert msg == "Error: Student not found."
+    result = delete_student("S555")
+    assert result == "Error: Student not found."
 
 
-# -----------------------------------------------------------
-# TEST: Exporting students
-# -----------------------------------------------------------
+# ---------------------------
+# TEST: Export File
+# ---------------------------
 def test_export_students(tmp_path):
-    # Create temporary file
-    filename = tmp_path / "students_test.txt"
-
+    # Add sample
     add_student("S001", "Ali", "10A")
-    msg = export_students(str(filename))
 
-    assert msg == f"Students exported to {filename}"
-
-    # Verify file content
-    with open(filename, "r") as f:
-        content = f.read()
-
-    assert "S001" in content
-    assert "Ali" in content
+    filename = tmp_path / "export_test.txt"
+    result = export_studen_

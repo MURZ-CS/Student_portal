@@ -3,7 +3,7 @@ import pytest
 # ---- Import all functions from your modules ----
 from Student import (
     add_student, view_students, update_student, delete_student,
-    search_student_by_id, search_student_by_name, promote_student,
+    search_student, search_student_by_name, promote_student,
     count_students_by_class
 )
 
@@ -61,13 +61,13 @@ def test_update_student():
 
 def test_search_student_by_id():
     add_student("S2", "Bob", "9A")
-    assert search_student_by_id("S2")["name"] == "Bob"
+    assert search_student("S2")["name"] == "Bob"
 
 
 def test_promote_student():
     add_student("S3", "Charlie", "8A")
     promote_student("S3")
-    assert search_student_by_id("S3")["class"] == "9A"
+    assert search_student("S3")["class"] == "9A"
 
 
 # ==================== TEACHER TESTS ==================== #

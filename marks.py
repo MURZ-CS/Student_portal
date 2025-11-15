@@ -1,21 +1,9 @@
-# marks.py
 
-# Structure:
-# marks = {
-#   "S1": {
-#        "Math": {"midterm": 85, "final": 90},
-#        "English": {"midterm": 70, "final": 75},
-#        "Science": {"midterm": 88, "final": 92}
-#   }
-# }
 
 marks = {}
 VALID_EXAMS = ["midterm", "final", "quiz", "assignment", "project"]
 
 
-# ---------------------------- BASIC FUNCTIONS -----------------------------
-
-# marks.py (simplified version)
 
 marks = {}
 VALID_EXAMS = ["midterm", "final", "quiz", "assignment", "project"]

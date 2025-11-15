@@ -1,11 +1,5 @@
-# grades.py
 
 from marks import calculate_percentage, marks
-
-
-# ==============================
-# GRADE SYSTEM CONFIG
-# ==============================
 
 GRADE_BOUNDARIES = {
     "A+": (90, 100),
@@ -42,10 +36,6 @@ DEFAULT_WEIGHTAGE = {
 
 
 
-# ==============================
-# LETTER GRADE CALCULATION
-# ==============================
-
 def calculate_grade(percentage):
     for grade, (low, high) in GRADE_BOUNDARIES.items():
         if low <= percentage <= high:
@@ -54,18 +44,10 @@ def calculate_grade(percentage):
 
 
 
-# ==============================
-# GRADE POINT CALCULATION
-# ==============================
-
 def get_grade_point(letter_grade):
     return GRADE_POINTS.get(letter_grade, 0.0)
 
 
-
-# ==============================
-# GPA CALCULATION (Per Student)
-# ==============================
 
 def calculate_gpa(student_id):
     if student_id not in marks:

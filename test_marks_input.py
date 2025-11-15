@@ -17,7 +17,6 @@ def test_add_marks_boundaries():
     assert add_marks("S1","Math","midterm",101)=="Above Maximum (invalid)"
 
     #now checking if they are actually stored#
-
-assert marks["S1"]["Math"]["final"]==100
-
-assert marks["S1"]["Math"]["final"]==50
+def test_if_element_added():
+    add_marks("S1","Math","final")
+    assert marks["S1"]["Math"]["final"]==100

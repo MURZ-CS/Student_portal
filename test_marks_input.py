@@ -18,5 +18,5 @@ def test_add_marks_boundaries():
 
     #now checking if they are actually stored#
 def test_if_element_added():
-    add_marks("S1","Math","final")
+    add_marks("S1","Math","final",100)
     assert marks["S1"]["Math"]["final"]==100

@@ -12,7 +12,7 @@ VALID_EXAMS = ["midterm", "final", "quiz", "assignment", "project"]
 
 def validate_mark_input(score):
     #checking first if marks within range 0-100#
-    if score>0:
+    if score<0:
         return "Below minimum (invalid)"
     elif score>100:
         return "Above Maximum (invalid)"

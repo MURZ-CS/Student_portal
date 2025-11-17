@@ -19,14 +19,12 @@ from Attandance import (
     worst_attendance_days
 )
 
-# ----------------- FIXTURE TO RESET DATA ----------------- #
+ 
 @pytest.fixture(autouse=True)
 def reset_data():
     attendance.clear()
     yield
 
-
-# ==================== SIMPLE TESTS ==================== #
 
 def test_mark_attendance():
     result = mark_attendance("S001", "2025-11-01", "P")

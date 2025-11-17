@@ -9,14 +9,12 @@ from Student import (
     delete_student
 )
 
-# ----------------- FIXTURE TO RESET DATA ----------------- #
 @pytest.fixture(autouse=True)
 def reset_data():
     students_db.clear()
     yield
 
 
-# ==================== SIMPLE TESTS ==================== #
 
 def test_add_student():
     result = add_student("S001", "Alice", "10A")

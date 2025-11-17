@@ -1,4 +1,4 @@
-# test_portal_functions.py
+
 import pytest
 from Student import add_student, view_students, update_student, delete_student, search_student, search_by_class
 from teachers import add_teacher, view_teachers, update_teacher, delete_teacher, search_by_name, assign_class
@@ -6,9 +6,6 @@ from Attandance import mark_attendance, view_attendance, update_attendance, dele
 from marks import add_marks, view_marks, update_marks, delete_marks, calculate_percentage
 from grades import calculate_grade, calculate_gpa, subject_grades
 
-# ----------------------------
-# STUDENT TESTS
-# ----------------------------
 def test_add_view_student():
     add_student("S001", "Alice", "10A", "123456", "Street 1")
     students = view_students()
@@ -53,9 +50,6 @@ def test_delete_teacher():
     teachers = view_teachers()
     assert "T003" not in teachers
 
-# ----------------------------
-# ATTENDANCE TESTS
-# ----------------------------
 def test_mark_view_attendance():
     mark_attendance("S001", "2025-11-14", "P")
     records = view_attendance("S001")
@@ -70,9 +64,6 @@ def test_update_delete_attendance():
     records = view_attendance("S002")
     assert "2025-11-14" not in records
 
-# ----------------------------
-# MARKS TESTS
-# ----------------------------
 def test_add_view_marks():
     add_marks("S001", "Math", "midterm", 85)
     add_marks("S001", "Math", "final", 90)
@@ -94,9 +85,6 @@ def test_calculate_percentage():
     perc = calculate_percentage("S003")
     assert round(perc, 2) == 85.0
 
-# ----------------------------
-# GRADES TESTS
-# ----------------------------
 def test_calculate_grade():
     assert calculate_grade(95) == "A+"
     assert calculate_grade(82) == "A"
@@ -121,5 +109,4 @@ def test_calculate_gpa():
     add_marks("S005", "Physics", "final", 72)
     gpa = calculate_gpa("S005")
     assert round(gpa, 2) == 3.5
-  # according to grading boundaries
 

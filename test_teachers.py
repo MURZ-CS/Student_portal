@@ -18,14 +18,11 @@ from teachers import (
     count_teachers
 )
 
-# ----------------- FIXTURE TO RESET DATA ----------------- #
 @pytest.fixture(autouse=True)
 def reset_data():
     teachers.clear()
     yield
 
-
-# ==================== SIMPLE TESTS ==================== #
 
 def test_add_teacher():
     result = add_teacher("T001", "Mr. John")
